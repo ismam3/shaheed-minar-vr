@@ -1,0 +1,114 @@
+<html>
+    <head>
+        <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+        <script src="https://unpkg.com/aframe-environment-component/dist/aframe-environment-component.min.js"></script>
+        <script src="https://rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>  
+ 
+        <!-- <script src="aframe-extras.min.js"></script> -->
+        <!-- <script src="aframe-physics-system.min.js"></script> -->
+
+        <meta name="description" content="Shaheed Minar in VR. First presentation of Shaheed Minar in virtual reality. Enjoy! the tour to Shaheed Minar through metaverse">
+        <meta name="keywords" content="Shaheed Minar, VR, VR museum">
+
+        <title>Shaheed Minar in VR</title>
+        <script>
+            alert("Caution: The performance of this application may be varied due to internet speed and your device. Please keep your patience!")
+        </script>
+    </head>
+    <body style="user-select: none; -webkit-app-region:drag;">
+
+        <a-scene fog="type: linear; color: #AAA" loading-screen="dotsColor: blue; backgroundColor:skyblue" vr-mode-ui="enabled:false" physics="debug: false">
+            <!-- assets -->
+            <a-assets>
+                <img id="concrete_texture" src="textures/concrete_texture.jpg">
+                <img id="white_marbel" src="textures/white_marbel_tiles.jpg">
+                <img id="sky_texture" src="textures/clear_sky.jpeg">
+                <img id="grass_texture" src="textures/grass(1).jpg">
+                <img id="brick" src="textures/brick_texture.jpg">
+                <img id="ad" src="advertisement.png">
+                
+                <a-asset-item id="model" src="models/main10.glb"></a-asset-item>
+                <a-asset-item id="mesh" src="models/mesh5.glb"></a-asset-item>
+                
+            </a-assets>
+
+            <a-entity environment="preset: forest;fog:0.7;dressing:none;ground:flat;shadow:true" scale="1 1 1"></a-entity>
+
+            <a-entity id="model" rotation="0 270 0" position="0 5.616 -28.918" gltf-model="#model" scale="5 5 5">
+            </a-entity>
+            <a-entity mesh id="mesh" rotation="0 270 0" position="0 5.616 -28.918" gltf-model="#mesh" scale="5 5 5">
+            </a-entity>
+
+            <a-image src="#ad" position="-29.513 2.884 -32.766" scale="10 10 1" rotation="-12 45 0"></a-image>
+            <a-image src="#ad" position="-14.132 0.578 -8.190" scale="5 5 1" rotation="270 90 0"></a-image>
+            <a-image src="#ad" position="13.723 0.578 -8.190" scale="5 5 1" rotation="270 270 0"></a-image>
+            <a-image src="#ad" position="0 0.578 -8.190" scale="5 5 1" rotation="270 0 0"></a-image>
+
+
+            <a-entity id="cameraRig" position="0 1.2 0" >
+                <a-entity id="head" position="0 0 0" camera="userHeight:1.2" look-controls="pointerLockEnabled:true">
+                    <a-entity position="0.1 -0.1 0"
+                        touch-listener
+                        teleport-controls=
+                            "cameraRig: #cameraRig;
+                            teleportOrigin: #head;
+                            startEvents:starttouch;
+                            endEvents:endtouch;
+                            curveShootingSpeed:3;
+                            hitCylinderRadius:0.1;
+                            collisionEntities: [mesh]"
+                    >
+                    <!-- collisionEntities: [mesh] -->
+                    </a-entity>
+                </a-entity>
+            </a-entity>
+            
+            <!-- <a-entity light="type: ambient; color: #CCC"></a-entity> -->
+            
+            <!-- <a-entity light="type: directional; color: #EEE; intensity: 0.5" position="15.92 16.48 0"></a-entity> -->
+        </a-scene>
+        <script>
+            AFRAME.registerComponent('touch-listener', {
+                init: function () {
+                    var targetEl = this.el;
+
+                    //Create the touchstart event
+                    document.querySelector('a-scene').addEventListener('touchstart', function () {
+                    targetEl.emit('starttouch')
+                    })
+
+                    document.querySelector('a-scene').addEventListener('mousedown', function () {
+                    targetEl.emit('starttouch')
+                    })
+
+                    document.body.addEventListener('keydown', function (e) {
+                    if (e.keyCode == 32) {
+                        console.log('space key pressed!');
+                        targetEl.emit('starttouch');      
+                    }  
+                    })
+                    
+                    //Create the touchend event
+                    document.querySelector('a-scene').addEventListener('touchend', function () {
+                    targetEl.emit('endtouch')
+                    })
+                    
+                    document.querySelector('a-scene').addEventListener('mouseup', function () {
+                    targetEl.emit('endtouch')
+                    })
+                    
+                    document.body.addEventListener('keyup', function (e) {
+                    if (e.keyCode == 32) {
+                        console.log('space key released!');
+                        targetEl.emit('endtouch');      
+                    }  
+                    })
+
+                    
+                }
+                });
+
+        </script>
+    </body>
+</html>
