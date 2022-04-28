@@ -1,13 +1,20 @@
 <html>
     <head>
-        <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
-        <script src="https://unpkg.com/aframe-environment-component/dist/aframe-environment-component.min.js"></script>
-        <script src="https://rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>  
+        <script src="a-frame/1-1-0.min.js"></script>
+        <script src="a-frame/environment.min.js"></script>
+        <script src="a-frame/teleport-control.min.js"></script>
+        <script src="a-frame/extras.min.js"></script>  
  
         <!-- <script src="aframe-extras.min.js"></script> -->
         <!-- <script src="aframe-physics-system.min.js"></script> -->
 
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="theme-color" content="#87CEEB">
+
+        <link rel="manifest" href="manifest.json">
+        <link rel="apple-touch-icon" href="logo/192.png">
+        
         <meta name="description" content="Shaheed Minar in VR. First presentation of Shaheed Minar in virtual reality. Enjoy! the tour to Shaheed Minar through metaverse">
         <meta name="keywords" content="Shaheed Minar, VR, VR museum">
 
@@ -106,6 +113,16 @@
                     
                 }
                 });
+
+                if("serviceWorker" in navigator){
+                    navigator.serviceWorker.register("sw.js").then(registration=>{
+                        console.log("Service Worker registered!");
+                        console.log(registration);
+                    }).catch(error=>{
+                        console.log("Service Worker registration failed")
+                        console.log(error);
+                    })
+                }
 
                 document.querySelector("a-scene").addEventListener("enter-vr",function (){
                     document.querySelector("#controller").innerHTML = "<a-entity movement-controls='constrainToNavMesh:True'><a-entity position='0 1.6 0' camera look-controls></a-entity></a-entity>"
