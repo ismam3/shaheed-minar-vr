@@ -1,6 +1,6 @@
 <html>
     <head>
-        <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+        <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
         <script src="https://unpkg.com/aframe-environment-component/dist/aframe-environment-component.min.js"></script>
         <script src="https://rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>  
@@ -21,23 +21,24 @@
         <a-scene fog="type: linear; color: #AAA" loading-screen="dotsColor: blue; backgroundColor:skyblue" vr-mode-ui="enabled:true" physics="debug: false">
             <!-- assets -->
             <a-assets>
-                <img id="concrete_texture" src="textures/concrete_texture.jpg">
-                <img id="white_marbel" src="textures/white_marbel_tiles.jpg">
-                <img id="sky_texture" src="textures/clear_sky.jpeg">
                 <img id="grass_texture" src="textures/grass(1).jpg">
-                <img id="brick" src="textures/brick_texture.jpg">
                 <img id="ad" src="advertisement.png">
                 
                 <a-asset-item id="model" src="models/main10.glb"></a-asset-item>
                 <a-asset-item id="mesh" src="models/mesh5.glb"></a-asset-item>
+                <a-asset-item id="movement-mesh" src="models/nav-mesh9.gltf"></a-asset-item>
                 
             </a-assets>
 
-            <a-entity environment="preset: forest;fog:0.7;dressing:none;ground:flat;shadow:true" scale="1 1 1"></a-entity>
+            <a-entity environment="preset: forest;fog:0.7;dressing:none;ground:flat;shadow:true;skyType:atmosphere" scale="1 1 1"></a-entity>
+
+            <a-plane src="#grass_texture" height="500" width="500" rotation="-90 0 0"></a-plane>
 
             <a-entity id="model" rotation="0 270 0" position="0 5.616 -28.918" gltf-model="#model" scale="5 5 5">
             </a-entity>
-            <a-entity mesh id="mesh" rotation="0 270 0" position="0 5.616 -28.918" gltf-model="#mesh" scale="5 5 5">
+            <a-entity mesh id="mesh" rotation="0 270 0" position="0 5.616 -28.918" gltf-model="#mesh" scale="5 5 5" visible="false">
+            </a-entity>
+            <a-entity nav-mesh id="mesh-model" rotation="0 270 0" position="0 5.616 -28.918" gltf-model="#movement-mesh" scale="5 5 5" visible="false">
             </a-entity>
 
             <a-image src="#ad" position="-29.513 2.884 -32.766" scale="10 10 1" rotation="-12 45 0"></a-image>
@@ -46,28 +47,24 @@
             <a-image src="#ad" position="0 0.578 -8.190" scale="5 5 1" rotation="270 0 0"></a-image>
 
 
-            <a-entity id="cameraRig" position="0 1.2 0" >
-                <a-entity id="head" position="0 0 0" camera="userHeight:1.2" look-controls="pointerLockEnabled:true">
-                    <a-entity position="0.1 -0.1 0"
-                        touch-listener
-                        teleport-controls=
-                            "cameraRig: #cameraRig;
-                            teleportOrigin: #head;
-                            startEvents:starttouch;
-                            endEvents:endtouch;
-                            curveShootingSpeed:3;
-                            hitCylinderRadius:0.1;
-                            collisionEntities: [mesh]"
-                    >
-                    <!-- collisionEntities: [mesh] -->
-                    </a-entity>
-                    <a-cursor></a-cursor>
+            <a-entity id="controller">
+                <a-entity id="cameraRig" position="0 1.2 0" >
+                    <a-entity id="head" position="0 0 0" camera="userHeight:1.2" look-controls="pointerLockEnabled:true">
+                        <a-entity position="0.1 -0.1 0"
+                            touch-listener
+                            teleport-controls=
+                                "cameraRig: #cameraRig;
+                                teleportOrigin: #head;
+                                startEvents:starttouch;
+                                endEvents:endtouch;
+                                curveShootingSpeed:3;
+                                hitCylinderRadius:0.1;
+                                collisionEntities: [mesh]"
+                        >
+                        </a-entity>
                 </a-entity>
             </a-entity>
             
-            <!-- <a-entity light="type: ambient; color: #CCC"></a-entity> -->
-            
-            <!-- <a-entity light="type: directional; color: #EEE; intensity: 0.5" position="15.92 16.48 0"></a-entity> -->
         </a-scene>
         <script>
             AFRAME.registerComponent('touch-listener', {
@@ -109,6 +106,14 @@
                     
                 }
                 });
+
+                document.querySelector("a-scene").addEventListener("enter-vr",function (){
+                    document.querySelector("#controller").innerHTML = "<a-entity movement-controls='constrainToNavMesh:True'><a-entity position='0 1.6 0' camera look-controls></a-entity></a-entity>"
+                })
+
+                document.querySelector("a-scene").addEventListener("exit-vr",function (){
+                    document.querySelector("#controller").innerHTML = "<a-entity id='cameraRig' position='0 1.2 0'><a-entity id='head' position='0 0 0' camera='userHeight:1.2' look-controls='pointerLockEnabled:true'><a-entity position='0.1 -0.1 0' touch-listener teleport-controls='cameraRig: #cameraRig;teleportOrigin: #head;startEvents:starttouch;endEvents:endtouch;curveShootingSpeed:3;hitCylinderRadius:0.1;collisionEntities: [mesh]'></a-entity></a-entity></a-entity>"
+                })
 
         </script>
     </body>
